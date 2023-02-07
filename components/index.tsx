@@ -3,6 +3,9 @@ import { Grid } from "./Grid"
 import { keyBoard, useTouch } from "./helpers/controls"
 import { defaultGameState, newGrid, randomFood, renderGrid } from "./helpers/grid"
 import { positionSnake } from "./helpers/snake"
+import GameStart from '@/components/GameStart'
+import { Box } from "./Box"
+import SnakeLogo from "./SnakeLogo"
 
 export function SnakeController() {
   const [grid, setGrid] = useState(newGrid(16, 16))
@@ -123,32 +126,65 @@ export function SnakeController() {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      Snake
-      <button onClick={() => setGameState(g => ({ ...g, started: !g.started }))}>
-        {gameState.started ? 'stop' : 'start'}
-      </button>
+      {(!gameState.started && !dead) && (
+        <>
+          <GameStart startFn={() => setGameState(g => ({ ...g, started: true }))} />
+        </>
+      )}
       {(gameState.started) && (
         <>
-          <p>Speed {gameState.speed}</p>
-          <p>Cycles {gameState.cycles}</p>
-          <p>renders {gameState.renders}</p>
+          <div className='flex flex-col items-center'>
+            <SnakeLogo size={50} />
+            <div className='flex gap-4 items-center'>
+              <Box state='food' />
+              <p>{gameState.snake.length - 3}</p>
+            </div>
+          </div>
           <button onClick={() => restart()}>restart</button>
           <Grid grid={grid} />
         </>
       )}
       {(dead && !gameState.started) && (
-        <div className='border rounded-lg p-4 m-4'>
-          <h1>Nice try!</h1>
-          <p>
-            cycles: {score.cycles}
-          </p>
-          <p>
-            eaten: {score.snakeLength - 3}
-          </p>
-          <p>
-            movements: {score.movements}
-          </p>
-        </div>
+
+        <>
+          <div className='p-8 flex flex-col items-center'>
+            <SnakeLogo alive={false} />
+            <h1
+              className='
+                text-indigo-500
+                font-extrabold
+                text-center
+                m-4
+              '
+            >
+              Nice try!
+            </h1>
+            <p>
+              cycles: {score.cycles}
+            </p>
+            <p>
+              eaten: {score.snakeLength - 3}
+            </p>
+            <p>
+              movements: {score.movements}
+            </p>
+
+            <button
+              className='
+                my-4
+                py-1
+                px-4
+                font-extrabold
+                text-slate-200
+                bg-indigo-500
+                rounded-xl
+              '
+              onClick={() => setGameState(g => ({ ...g, started: true }))}
+            >
+              Restart
+            </button>
+          </div>
+        </>
       )}
     </div>
   )
