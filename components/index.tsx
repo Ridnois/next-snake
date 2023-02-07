@@ -1,39 +1,14 @@
 import { useEffect, useState } from "react"
+import { Grid } from "./Grid"
 import { keyBoard, useTouch } from "./helpers/controls"
-import { changeCellState, defaultSnake, Grid, gridWithFood, newGrid, randomFood, renderGrid } from "./helpers/grid"
-import { moveSnake } from "./helpers/snake"
+import { defaultSnake, newGrid, randomFood, renderGrid } from "./helpers/grid"
+import { positionSnake } from "./helpers/snake"
 
-export interface BoxProps {
-  state: 'empty' | 'snake' | 'food'
-}
-
-export function Box(props: BoxProps) {
-  return (
-    <div className={`
-         h-6
-         rounded-sm
-         w-5
-         ${props.state === 'snake' ? 'bg-cyan-500' : props.state === 'food' ? 'bg-red-400' : 'bg-slate-900'}
-        `}
-    >
-    </div>
-  )
-}
-
-export function Grid({ grid }: { grid: Grid }) {
-  return (
-    <div className=' flex flex-col items-center'>
-      <div className='bg-slate-400'>
-        {grid.map((row, y) => (
-          <div className='flex' key={y}>
-            {
-              row.map((cell, x) => (<Box {...cell} key={x} />))
-            }
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+const gameState = {
+  started: false,
+  cycles: 0,
+  snake: defaultSnake,
+  renders: 0
 }
 
 export function SnakeController() {
@@ -48,7 +23,6 @@ export function SnakeController() {
   const [dead, setDead] = useState(false)
   const [score, setScore] = useState<{ snakeLength: number, movements: number, cycles: number }>({ snakeLength: 3, movements: 1, cycles: 4 })
   const [movements, setMovements] = useState(0)
-  const [deadMessage, setDeadMessage] = useState()
 
   const {
     handleTouchStart,
@@ -56,10 +30,13 @@ export function SnakeController() {
   } = useTouch(turn)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSpeed(s => (s / 100) * 99)
-      setCycles(c => c + 1)
-    }, speed)
+    let interval: NodeJS.Timer;
+    if (started) {
+      interval = setInterval(() => {
+        setSpeed(s => (s / 100) * 99)
+        setCycles(c => c + 1)
+      }, speed)
+    }
     return () => {
       clearInterval(interval)
     }
@@ -73,58 +50,53 @@ export function SnakeController() {
     }
   }, [cycles])
 
-  function move() {
-    try {
-      const newSnake = moveSnake(direction, snake)
-      const [head, ...body] = newSnake
-      const { x, y } = head
-      // steped on itself
-      if (grid[y][x].state === 'snake') {
-        throw 'Snake byte its tail'
-      }
-      //// landed on empty cell
-      if (grid[y][x].state !== 'food') {
-        body.pop()
-      } else {
-        setFood(randomFood(grid))
-      }
-
-      if (x >= grid.length || y >= grid.length || x < 0 || y < 0) {
-        throw 'outside borders'
-      }
-      setSnake([head, ...body])
-    } catch (e) {
-      restart(true)
-    }
-  }
-
   useEffect(() => {
+    console.log('snake moved')
     setGrid(renderGrid(grid, snake, food))
   }, [snake])
 
   useEffect(() => {
-    move()
-  }, [cycles])
-  useEffect(() => { setRenders(r => r + 1) }, [grid])
-
-  function restart(_dead = false) {
-    if (_dead) {
-      setScore({
-        snakeLength: snake.length,
-        movements,
-        cycles,
-      })
-      setDead(true)
-    } else {
-      setDead(false)
+    const nextSnake = positionSnake(
+      snake,
+      direction,
+      grid,
+      () => setFood(randomFood(grid)),
+      (e: unknown) => restart(true)
+    )
+    if (nextSnake) {
+      setSnake(nextSnake)
     }
+  }, [cycles])
 
+  useEffect(() => {
+    setRenders(r => r + 1)
+  }, [grid])
+
+  function afterDead() {
+    setScore({
+      snakeLength: snake.length,
+      movements,
+      cycles,
+    })
+    setDead(true)
+  }
+  function cleanUp() {
     setStarted(false)
     setSpeed(500)
     setGrid(newGrid(16, 16))
     setCycles(0)
     setSnake(defaultSnake)
     setRenders(0)
+  }
+
+  function restart(endGame = false) {
+    if (endGame) {
+      afterDead()
+    } else {
+      setDead(false)
+    }
+
+    cleanUp()
   }
 
   function turn(_direction: string) {
@@ -155,7 +127,7 @@ export function SnakeController() {
 
   return (
     <div
-      className='relative touch-none'
+      className='touch-none'
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -175,7 +147,6 @@ export function SnakeController() {
       {(dead && !started) && (
         <div className='border rounded-lg p-4 m-4'>
           <h1>Nice try!</h1>
-          <p>{deadMessage}</p>
           <p>
             cycles: {score.cycles}
           </p>
