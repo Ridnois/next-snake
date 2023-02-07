@@ -1,28 +1,17 @@
 import { useEffect, useState } from "react"
 import { Grid } from "./Grid"
-import { keyBoard, useTouch } from "./helpers/controls"
-import { defaultSnake, newGrid, randomFood, renderGrid } from "./helpers/grid"
+import { keyBoard, logarithmicReduction, useTouch } from "./helpers/controls"
+import { defaultGameState, newGrid, randomFood, renderGrid } from "./helpers/grid"
 import { positionSnake } from "./helpers/snake"
 
-const gameState = {
-  started: false,
-  cycles: 0,
-  snake: defaultSnake,
-  renders: 0
-}
-
 export function SnakeController() {
-  const [started, setStarted] = useState(false)
   const [grid, setGrid] = useState(newGrid(16, 16))
-  const [speed, setSpeed] = useState(500)
-  const [cycles, setCycles] = useState(0)
-  const [snake, setSnake] = useState(defaultSnake)
   const [food, setFood] = useState(randomFood(newGrid(16, 16)))
-  const [direction, setDirection] = useState('right')
-  const [renders, setRenders] = useState(0)
   const [dead, setDead] = useState(false)
   const [score, setScore] = useState<{ snakeLength: number, movements: number, cycles: number }>({ snakeLength: 3, movements: 1, cycles: 4 })
   const [movements, setMovements] = useState(0)
+
+  const [gameState, setGameState] = useState(defaultGameState)
 
   const {
     handleTouchStart,
@@ -31,16 +20,19 @@ export function SnakeController() {
 
   useEffect(() => {
     let interval: NodeJS.Timer;
-    if (started) {
+    if (gameState.started) {
       interval = setInterval(() => {
-        setSpeed(s => (s / 100) * 99)
-        setCycles(c => c + 1)
-      }, speed)
+        setGameState(g => ({
+          ...g,
+          cycles: g.cycles + 1,
+          speed: (g.speed / 100) * 99,
+        }))
+      }, gameState.speed)
     }
     return () => {
       clearInterval(interval)
     }
-  }, [started, speed])
+  }, [gameState.started, gameState.speed])
 
   useEffect(() => {
     const fn = keyBoard(turn)
@@ -48,45 +40,40 @@ export function SnakeController() {
     return () => {
       window.removeEventListener('keydown', fn)
     }
-  }, [cycles])
+  }, [gameState.cycles])
 
   useEffect(() => {
-    console.log('snake moved')
-    setGrid(renderGrid(grid, snake, food))
-  }, [snake])
+    setGrid(renderGrid(grid, gameState.snake, food))
+  }, [gameState.snake])
 
   useEffect(() => {
     const nextSnake = positionSnake(
-      snake,
-      direction,
+      gameState.snake,
+      gameState.direction,
       grid,
       () => setFood(randomFood(grid)),
       (e: unknown) => restart(true)
     )
     if (nextSnake) {
-      setSnake(nextSnake)
+      setGameState(g => ({ ...g, snake: nextSnake }))
     }
-  }, [cycles])
+  }, [gameState.cycles])
 
   useEffect(() => {
-    setRenders(r => r + 1)
+    setGameState(g => ({ ...g, renders: g.renders + 1 }))
   }, [grid])
 
   function afterDead() {
     setScore({
-      snakeLength: snake.length,
+      snakeLength: gameState.snake.length,
       movements,
-      cycles,
+      cycles: gameState.cycles,
     })
     setDead(true)
   }
   function cleanUp() {
-    setStarted(false)
-    setSpeed(500)
     setGrid(newGrid(16, 16))
-    setCycles(0)
-    setSnake(defaultSnake)
-    setRenders(0)
+    setGameState(defaultGameState)
   }
 
   function restart(endGame = false) {
@@ -99,7 +86,12 @@ export function SnakeController() {
     cleanUp()
   }
 
+  function setDirection(direction: string) {
+    setGameState(g => ({ ...g, direction: direction }))
+  }
+
   function turn(_direction: string) {
+    const { direction } = gameState
     setMovements(m => m + 1)
     switch (_direction) {
       case 'up':
@@ -132,19 +124,19 @@ export function SnakeController() {
       onTouchEnd={handleTouchEnd}
     >
       Snake
-      <button onClick={() => setStarted(s => !s)}>
-        {started ? 'stop' : 'start'}
+      <button onClick={() => setGameState(g => ({ ...g, started: !g.started }))}>
+        {gameState.started ? 'stop' : 'start'}
       </button>
-      {(started) && (
+      {(gameState.started) && (
         <>
-          <p>Speed {speed}</p>
-          <p>Cycles {cycles}</p>
-          <p>renders {renders}</p>
+          <p>Speed {gameState.speed}</p>
+          <p>Cycles {gameState.cycles}</p>
+          <p>renders {gameState.renders}</p>
           <button onClick={() => restart()}>restart</button>
           <Grid grid={grid} />
         </>
       )}
-      {(dead && !started) && (
+      {(dead && !gameState.started) && (
         <div className='border rounded-lg p-4 m-4'>
           <h1>Nice try!</h1>
           <p>

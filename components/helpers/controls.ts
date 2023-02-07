@@ -55,3 +55,8 @@ export function useTouch(turn: (direction: string) => void) {
     handleTouchEnd
   }
 }
+
+export function logarithmicReduction(max: number, factor: number): number {
+  let result = max / Math.log(max) * (1 - factor);
+  return result < 20 ? 20 : result;
+}

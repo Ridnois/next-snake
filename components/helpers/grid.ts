@@ -76,3 +76,12 @@ export function renderGrid(grid: Grid, snake: Snake, food: SnakeCell): Grid {
 }
 
 
+export const defaultGameState = {
+  started: false,
+  cycles: 0,
+  snake: defaultSnake,
+  renders: 0,
+  speed: 250,
+  direction: 'right'
+}
+
