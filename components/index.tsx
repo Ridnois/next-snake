@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Grid } from "./Grid"
-import { keyBoard, logarithmicReduction, useTouch } from "./helpers/controls"
+import { keyBoard, useTouch } from "./helpers/controls"
 import { defaultGameState, newGrid, randomFood, renderGrid } from "./helpers/grid"
 import { positionSnake } from "./helpers/snake"
 
