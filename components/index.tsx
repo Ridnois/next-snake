@@ -152,7 +152,7 @@ export function SnakeController() {
         </>
       )
       }
-      {/*(dead && !gameState.started) && (
+      {(dead && !gameState.started) && (
         <>
           <div className='p-8 flex flex-col items-center'>
             <SnakeLogo />
@@ -192,7 +192,7 @@ export function SnakeController() {
             </button>
           </div>
         </>
-      )*/}
+      )}
     </div >
   )
 }
