@@ -6,6 +6,7 @@ import { positionSnake } from "./helpers/snake"
 import GameStart from '@/components/GameStart'
 import { Box } from "./Box"
 import SnakeLogo from "./SnakeLogo"
+import { lobster } from "./fonts"
 
 export function SnakeController() {
   const [grid, setGrid] = useState(newGrid(16, 16))
@@ -122,7 +123,6 @@ export function SnakeController() {
 
   return (
     <div
-      className='touch-none'
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -134,21 +134,28 @@ export function SnakeController() {
       {(gameState.started) && (
         <>
           <div className='flex flex-col items-center'>
-            <SnakeLogo size={50} />
-            <div className='flex gap-4 items-center'>
-              <Box state='food' />
-              <p>{gameState.snake.length - 3}</p>
+            <h1 className={`${lobster.variable} font-sans text-4xl pt-8 text-red-500`}>Snake</h1>
+            <div className='flex gap-4 items-center justify-between w-full my-4'>
+              <div className='flex items-center w-1/4 justify-between'>
+                <Box state='food' />
+                <p className='font-extrabold text-2xl text-cyan-400'>{gameState.snake.length - 3}</p>
+              </div>
+              <button
+                className='px-4 py-2 bg-cyan-800 rounded-xl font-extrabold text-slate-100'
+                onClick={() => restart()}
+              >
+                Restart
+              </button>
             </div>
           </div>
-          <button onClick={() => restart()}>restart</button>
           <Grid grid={grid} />
         </>
-      )}
-      {(dead && !gameState.started) && (
-
+      )
+      }
+      {/*(dead && !gameState.started) && (
         <>
           <div className='p-8 flex flex-col items-center'>
-            <SnakeLogo alive={false} />
+            <SnakeLogo />
             <h1
               className='
                 text-indigo-500
@@ -185,7 +192,7 @@ export function SnakeController() {
             </button>
           </div>
         </>
-      )}
-    </div>
+      )*/}
+    </div >
   )
 }
