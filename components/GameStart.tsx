@@ -6,24 +6,26 @@ export default function GameStart({ startFn }: { startFn: any }) {
     <div
       className='
       p-8
+      m-4
+      mt-24
       flex
       flex-col
       items-center
-      pt-32
+      gap-4
     '
     > <SnakeLogo size={100} />
-      <h1 className={`${lobster.variable} font-sans text-4xl pt-8 text-red-500`}>Snake</h1>
+      <h1 className={`${lobster.variable} font-sans text-3xl text-red-500`}>Snake</h1>
       <p className='text-center'>
         Use gestures on mobile devices, or <b>WASD</b> on keyboards
       </p>
       <button
         className='
-          my-4
-          py-1
+          p-2
           px-4
           font-extrabold
-          text-slate-200
-          bg-cyan-500
+          text-xl
+          text-slate-200/90
+          bg-cyan-700
           rounded-xl
         '
         onClick={startFn}

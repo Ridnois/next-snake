@@ -122,10 +122,7 @@ export function SnakeController() {
   }
 
   return (
-    <div
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
+    <>
       {(!gameState.started && !dead) && (
         <>
           <GameStart startFn={() => setGameState(g => ({ ...g, started: true }))} />
@@ -133,20 +130,25 @@ export function SnakeController() {
       )}
       {(gameState.started) && (
         <>
-          <div className='flex flex-col items-center'>
-            <h1 className={`${lobster.variable} font-sans text-4xl pt-8 text-red-500`}>Snake</h1>
-            <div className='flex gap-4 items-center justify-between w-full my-4'>
+          <div className='flex flex-col items-center m-auto w-full px-8'>
+            <h1 className={`${lobster.variable} font-sans text-3xl text-red-500 py-4`}>Snake 🐍</h1>
+            <div className='flex gap-4 items-center justify-between w-full my-2'>
               <div className='flex items-center w-1/4 justify-between'>
                 <Box state='food' />
                 <p className='font-extrabold text-2xl text-cyan-400'>{gameState.snake.length - 3}</p>
               </div>
               <button
-                className='px-4 py-2 bg-cyan-800 rounded-xl font-extrabold text-slate-100'
+                className='p-2 px-4 bg-cyan-800 text-md border-cyan-700 border-4 rounded-xl font-extrabold text-slate-100'
                 onClick={() => restart()}
               >
                 Restart
               </button>
             </div>
+          </div>
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
           </div>
           <Grid grid={grid} />
         </>
@@ -193,6 +195,6 @@ export function SnakeController() {
           </div>
         </>
       )}
-    </div >
+    </>
   )
 }

@@ -3,7 +3,7 @@ export default function SourceCode() {
     <>
       <a href={process.env.NEXT_PUBLIC_SOURCE_CODE}>
         <div
-          className='flex flex-col items-center pr-6'
+          className='flex flex-col items-center'
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

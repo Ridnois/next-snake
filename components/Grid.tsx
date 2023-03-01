@@ -3,8 +3,8 @@ import { Box } from "./Box"
 
 export function Grid({ grid }: { grid: Grid }) {
   return (
-    <div className='touch-none flex flex-col items-center'>
-      <div className='rounded-xl overflow-hidden dark:bg-slate-700'>
+    <div className='touch-none flex flex-col items-center border-4 rounded-xl border-slate-800'>
+      <div className='rounded-xl overflow-hidden dark:bg-slate-800'>
         {grid.map((row, y) => (
           <div className='flex' key={y}>
             {
