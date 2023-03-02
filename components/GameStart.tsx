@@ -7,16 +7,19 @@ export default function GameStart({ startFn }: { startFn: any }) {
       className='
       p-8
       m-4
-      mt-24
       flex
       flex-col
       items-center
       gap-4
+      border-4
+      border-slate-800
+      rounded-xl
     '
-    > <SnakeLogo size={100} />
+    > 
+      <h1 className='text-8xl'>🐍</h1>
       <h1 className={`${lobster.variable} font-sans text-3xl text-red-500`}>Snake</h1>
       <p className='text-center'>
-        Use gestures on mobile devices, or <b>WASD</b> on keyboards
+        Use gestures on mobile devices, or <b>WASD</b> on keyboards.
       </p>
       <button
         className='

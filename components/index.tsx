@@ -131,7 +131,6 @@ export function SnakeController() {
       {(gameState.started) && (
         <>
           <div className='flex flex-col items-center m-auto w-full px-8'>
-            <h1 className={`${lobster.variable} font-sans text-3xl text-red-500 py-4`}>Snake 🐍</h1>
             <div className='flex gap-4 items-center justify-between w-full my-2'>
               <div className='flex items-center w-1/4 justify-between'>
                 <Box state='food' />
@@ -149,33 +148,38 @@ export function SnakeController() {
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
+            <Grid grid={grid} />
           </div>
-          <Grid grid={grid} />
         </>
       )
       }
       {(dead && !gameState.started) && (
         <>
-          <div className='p-8 flex flex-col items-center'>
-            <SnakeLogo />
+          <div className='
+                flex flex-col items-center justify-around
+                p-8
+                mx-4
+                border-4
+                border-slate-800
+                rounded-xl
+          '>
+            <h1 className='text-8xl p-2'>
+              💀
+            </h1>
             <h1
               className='
                 text-indigo-500
                 font-extrabold
                 text-center
+                text-3xl
                 m-4
               '
             >
               Nice try!
             </h1>
+
             <p>
-              cycles: {score.cycles}
-            </p>
-            <p>
-              eaten: {score.snakeLength - 3}
-            </p>
-            <p>
-              movements: {score.movements}
+              Score: {score.snakeLength - 3}
             </p>
 
             <button
@@ -184,8 +188,10 @@ export function SnakeController() {
                 py-1
                 px-4
                 font-extrabold
-                text-slate-200
-                bg-indigo-500
+                text-slate-200/90
+                bg-cyan-700
+                border-4
+                border-cyan-600
                 rounded-xl
               '
               onClick={() => setGameState(g => ({ ...g, started: true }))}

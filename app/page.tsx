@@ -6,6 +6,7 @@ import SourceCode from '@/components/GithubLogo'
 export default function Home() {
   return (
     <div className={`flex flex-col justify-between items-center ${inter.className} h-[100svh]`}>
+      <h1 className={`${lobster.variable} font-sans text-3xl text-red-500 py-4`}>Snake 🐍</h1>
       <SnakeController />
       <div className=' p-4'>
         <SourceCode />
