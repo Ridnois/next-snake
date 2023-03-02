@@ -131,12 +131,12 @@ export function SnakeController() {
 
   return (
     <>
-      {(gameState.started && !dead) && (
+      {(!gameState.started && !dead) && (
         <>
           <GameStart startFn={() => setGameState(g => ({ ...g, started: true }))} />
         </>
       )}
-      {(!gameState.started) && (
+      {(gameState.started) && (
         <>
           <div className='flex flex-col items-center mx-auto w-full px-8 md:w-2/3 md:mx-auto md:gap-4 md:justify-start'>
             <div className='flex gap-4 items-center justify-between w-full my-2'>
