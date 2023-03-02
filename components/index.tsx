@@ -5,8 +5,14 @@ import { defaultGameState, newGrid, randomFood, renderGrid } from "./helpers/gri
 import { positionSnake } from "./helpers/snake"
 import GameStart from '@/components/GameStart'
 import { Box } from "./Box"
-import SnakeLogo from "./SnakeLogo"
-import { lobster } from "./fonts"
+
+function getLogarithmicValue(min: number, max: number, i: number): number {
+  const logMin = Math.log10(min);
+  const logMax = Math.log10(max);
+  const logVal = logMin + ((logMax - logMin) * (i / 5000));
+
+  return Math.pow(10, logVal);
+}
 
 export function SnakeController() {
   const [grid, setGrid] = useState(newGrid(16, 16))
@@ -29,7 +35,6 @@ export function SnakeController() {
         setGameState(g => ({
           ...g,
           cycles: g.cycles + 1,
-          speed: (g.speed / 100) * 99,
         }))
       }, gameState.speed)
     }
@@ -55,7 +60,10 @@ export function SnakeController() {
       gameState.snake,
       gameState.direction,
       grid,
-      () => setFood(randomFood(grid)),
+      () => {
+        setFood(randomFood(grid))
+        setGameState((g => ({ ...g, speed: g.speed <= 10 ? g.speed : g.speed - 5 })))
+      },
       (e: unknown) => restart(true)
     )
     if (nextSnake) {

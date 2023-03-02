@@ -81,7 +81,7 @@ export const defaultGameState = {
   cycles: 0,
   snake: defaultSnake,
   renders: 0,
-  speed: 250,
+  speed: 255,
   direction: 'right'
 }
 
