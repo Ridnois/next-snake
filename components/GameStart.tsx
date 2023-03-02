@@ -12,7 +12,8 @@ export default function GameStart({ startFn }: { startFn: any }) {
       items-center
       gap-4
       border-4
-      border-slate-800
+      dark:border-slate-800
+      border-slate-300
       rounded-xl
     '
     > 

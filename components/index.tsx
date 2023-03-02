@@ -168,7 +168,8 @@ export function SnakeController() {
                 p-8
                 mx-4
                 border-4
-                border-slate-800
+                dark:border-slate-800
+                border-slate-300
                 rounded-xl
           '>
             <h1 className='text-8xl p-2'>
